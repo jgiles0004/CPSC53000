@@ -314,7 +314,7 @@ void drawDataHighlight(int col) {
         fill(0); 
         textSize(18); 
         textAlign(CENTER); 
-        text(nf(value, 0, 2) + " (" + dates[row].getDateTimeAsFloat() + ")", x, y-8);
+        text(nf(value, 0, 2) + " (" + dates[row].getDateTime() + ")", x, y-8);
       } 
     } 
   } 
