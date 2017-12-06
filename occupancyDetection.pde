@@ -31,6 +31,14 @@ int HUMIDITY=5;
 
 int toggleLine = 0;
 
+//Data Point Descrition variables
+float value;
+float radius;
+float closestDist;
+String closestText; 
+float closestTextX; 
+float closestTextY;
+
 Integrator[] interpolators;
 
 void setup(){
@@ -80,7 +88,9 @@ void draw(){
   rowCount = data.getRowCount();
   // Show the plot area as a white box. 
   fill(255);
-   
+
+  closestDist = MAX_FLOAT;
+
   rectMode(CORNERS);
   noStroke( );
   rect(plotX1, plotY1, plotX2, plotY2);
@@ -101,10 +111,22 @@ void draw(){
     interpolators[row].update( );
   }
   
+  // Use global variables set in drawpoints( ) 
+  // to draw text related to closest circle. 
+  if (closestDist != MAX_FLOAT) { 
+    fill(0); textAlign(CENTER); 
+    text(closestText, closestTextX, closestTextY);
+  }
+  
   noStroke();
   fill(#5679C1);
 //   drawDataBars(currentColumn);
   drawTitleTabs();
+
+  noFill(); 
+  strokeWeight(2); 
+  drawDataLine(currentColumn); 
+  drawDataHighlight(currentColumn);
 }
 
 //Processes the dates once.
@@ -138,6 +160,7 @@ void drawDataPoints(int col) {
   for (int row = 0; row < rowCount; row++) {
     if (data.isValid(row, col)) {
       float value = data.getFloat(row, col);
+      value = data.getFloat(row, col);
       float x = map(dates[row].getDateTimeAsFloat(), dateMin.getDateTimeAsFloat(), dateMax.getDateTimeAsFloat(), plotX1, plotX2);
       float y = map(value, dataMin[col], dataMax[col], plotY2, plotY1);
       point(x, y);
@@ -175,7 +198,7 @@ void drawXLabels() {
     if (dates[row].getDateTimeAsFloat() % xInterval == 0) {
       float x = map(dates[row].getDateTimeAsFloat(), dateMin.getDateTimeAsFloat(), dateMax.getDateTimeAsFloat(), plotX1, plotX2);
       text(dates[row].getDate(), x, plotY2 + 10);
-      //line(x, plotY1, x, plotY2);
+      line(x, plotY1, x, plotY2);
     }
   }
 }
@@ -264,4 +287,35 @@ void drawTitleTabs() {
     text(title, runningX + tabPad, plotY1 - 10);
     runningX = tabRight[col];
   }
+}
+
+void drawDataLine(int col) { 
+  beginShape(); 
+  int rowCount = data.getRowCount(); 
+  for (int row = 0; row < rowCount; row ++) { 
+    if (data.isValid(row, col)) { 
+      float value = data.getFloat(row, col); 
+      float x = map(dates[row].getDateTimeAsFloat(), dateMin.getDateTimeAsFloat(), dateMax.getDateTimeAsFloat(), plotX1, plotX2);
+      float y = map(value, dataMin[col], dataMax[col], plotY2, plotY1);
+      vertex(x, y); 
+    } 
+  } 
+endShape( ); 
+}
+
+void drawDataHighlight(int col) { 
+  for (int row = 0; row < rowCount; row ++) { 
+    if (data.isValid(row, col)) { 
+      float value = data.getFloat(row, col); 
+      float x = map(dates[row].getDateTimeAsFloat(), dateMin.getDateTimeAsFloat(), dateMax.getDateTimeAsFloat(), plotX1, plotX2);
+      float y = map(value, dataMin[col], dataMax[col], plotY2, plotY1);
+      if (dist(mouseX, mouseY, x, y) < 3) { 
+        strokeWeight(10); point(x, y); 
+        fill(0); 
+        textSize(18); 
+        textAlign(CENTER); 
+        text(nf(value, 0, 2) + " (" + dates[row].getDateTimeAsFloat() + ")", x, y-8);
+      } 
+    } 
+  } 
 }
