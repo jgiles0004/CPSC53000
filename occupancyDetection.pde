@@ -31,6 +31,7 @@ String[] columnAxisLabels = {"Date","Degrees\nCelsius","Relative\nHumidity %","L
 final int TEMP=1,HUMIDITY=2,LIGHT=3,CO2=4,HUMIDITY_RATIO=5,OCCUPANCY=6;
 
 int toggleLine = 0;
+int toggleGridLine=0;
 
 //Data Point Descrition variables
 float value;
@@ -227,8 +228,12 @@ void drawXLabels() {
   textAlign(CENTER, TOP);
 
   // Use thin, gray lines to draw the grid.
-  stroke(224);
-  strokeWeight(1);
+  if(toggleGridLine==0){
+    stroke(224);
+    strokeWeight(1);
+  } else {
+    noStroke();
+  }
 
 
   for (int row = 0; row < rowCount; row++) {
@@ -251,6 +256,12 @@ void keyPressed() {
     currentColumn++;
     if (currentColumn == columnCount) {
       currentColumn = 1;
+    }
+  } else if (key == 'g'){
+    if(toggleGridLine==1){
+      toggleGridLine=0;
+    } else {
+      toggleGridLine=1;
     }
   }
 }
