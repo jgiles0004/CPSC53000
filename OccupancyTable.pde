@@ -12,7 +12,7 @@ class OccupancyTable {
   String[][] data;
   String[] rowNames;
   String[] columnNames;
- float[] columnMaxes, columnMins;
+  float[] columnMaxes, columnMins;
 
 
   OccupancyTable(String filename) {
@@ -180,86 +180,4 @@ class OccupancyTable {
     if (col < 0) return false;
     return data[row][col]!=null;
   }
-
-
-  //float getColumnMin(int col) {
-  //  float m = Float.MAX_VALUE;
-  //  for (int i = 0; i < rowCount; i++) {
-  //    if (!Float.isNaN(data[i][col])) {
-  //      if (data[i][col] < m) {
-  //        m = data[i][col];
-  //      }
-  //    }
-  //  }
-  //  return m;
-  //}
-
-
-  //float getColumnMax(int col) {
-  //  float m = -Float.MAX_VALUE;
-  //  for (int i = 0; i < rowCount; i++) {
-  //    if (isValid(i, col)) {
-  //      if (data[i][col] > m) {
-  //        m = data[i][col];
-  //      }
-  //    }
-  //  }
-  //  return m;
-  //}
-
-
-  //float getRowMin(int row) {
-  //  float m = Float.MAX_VALUE;
-  //  for (int i = 0; i < columnCount; i++) {
-  //    if (isValid(row, i)) {
-  //      if (data[row][i] < m) {
-  //        m = data[row][i];
-  //      }
-  //    }
-  //  }
-  //  return m;
-  //} 
-
-
-  //float getRowMax(int row) {
-  //  float m = -Float.MAX_VALUE;
-  //  for (int i = 1; i < columnCount; i++) {
-  //    if (!Float.isNaN(data[row][i])) {
-  //      if (data[row][i] > m) {
-  //        m = data[row][i];
-  //      }
-  //    }
-  //  }
-  //  return m;
-  //}
-
-
-  //  float getTableMin() {
-  //    float m = Float.MAX_VALUE;
-  //    for (int i = 0; i < rowCount; i++) {
-  //      for (int j = 0; j < columnCount; j++) {
-  //        if (isValid(i, j)) {
-  //          if (data[i][j] < m) {
-  //            m = data[i][j];
-  //          }
-  //        }
-  //      }
-  //    }
-  //    return m;
-  //  }
-
-
-  //  float getTableMax() {
-  //    float m = -Float.MAX_VALUE;
-  //    for (int i = 0; i < rowCount; i++) {
-  //      for (int j = 0; j < columnCount; j++) {
-  //        if (isValid(i, j)) {
-  //          if (data[i][j] > m) {
-  //            m = data[i][j];
-  //          }
-  //        }
-  //      }
-  //    }
-  //    return m;
-  //  }
 }

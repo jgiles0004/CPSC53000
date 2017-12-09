@@ -25,9 +25,10 @@ int columnCount;
 int rowCount = 0;
 
 int xInterval = 200000;
-float[] yInterval = {0,1,5,250,500,0.001,1};
+float[] yIntervalMajor = {0, 1 , 5 , 250 , 500 , 0.001 , 1 };
+float[] yIntervalMinor = {0 , 0.5 , 2.5 , 125 , 250 , 0.0005 , 0.5};
 String[] columnAxisLabels = {"Date","Degrees\nCelsius","Relative\nHumidity %","Light\n(in Lux)","Co2\n(in ppm)","Humidity\nRatio","Occupied (1)\nNot (0)"};
-int HUMIDITY=5;
+int TEMP=1,HUMIDITY=2,LIGHT=3,CO2=4,HUMIDITY_RATIO=5,OCCUPANCY=5;
 
 int toggleLine = 0;
 
@@ -173,14 +174,45 @@ void drawYLabels(int col){
     fill(0);
   textSize(10);
   textAlign(RIGHT, CENTER);
-  for (float v = dataMin[col]; v <= dataMax[col]; v += yInterval[col]) {
-    float y = map(v, dataMin[col], dataMax[col], plotY2, plotY1);
+  stroke(128);
+  strokeWeight(1);
+  for (float v = dataMin[col]; v <= dataMax[col]; v += yIntervalMinor[col]) {
+    
+    float y = map(v, dataMin[col], dataMax[col], plotY2, plotY1);  
+    line(plotX1-2, y, plotX1, y);
+    
+    println("v="+v+" yIntMaj="+yIntervalMajor[col]+" mod="+ v%yIntervalMajor[col]);
+    float comparisonVal=0;
+    float depth=0; //variable to see how close a value needs to be.
     if(col==HUMIDITY){
-      text(v, plotX1 - 10, y);
-    } else {
-      text(floor(v), plotX1 - 10, y);
+      comparisonVal=1.7450027;
+      depth=0.0001;
+    }  
+    if(col==HUMIDITY_RATIO){
+      comparisonVal=1.7450027;
+    } 
+    if(col==TEMP){
+      depth=0.1;
     }
-  }
+    if(col==CO2){
+      comparisonVal=412.75;
+    }
+    if(col==LIGHT){
+      depth=500;
+    }
+    if(col==OCCUPANCY){
+      depth=0.1;
+    }
+    if ((abs(v % yIntervalMajor[col]) -comparisonVal) < depth) {
+      if(col==HUMIDITY || col==HUMIDITY_RATIO){
+        text(v, plotX1 - 10, y);
+        line(plotX1-4, y, plotX1, y);
+      } else {
+        text(floor(v), plotX1 - 10, y);
+        line(plotX1-4, y, plotX1, y);
+            }
+        }
+    }
 }
 
 //Draws the X column labels
@@ -304,12 +336,17 @@ endShape( );
 }
 
 void drawDataHighlight(int col) { 
+  float min_dist =MAX_FLOAT;
   for (int row = 0; row < rowCount; row ++) { 
     if (data.isValid(row, col)) { 
       float value = data.getFloat(row, col); 
       float x = map(dates[row].getDateTimeAsFloat(), dateMin.getDateTimeAsFloat(), dateMax.getDateTimeAsFloat(), plotX1, plotX2);
       float y = map(value, dataMin[col], dataMax[col], plotY2, plotY1);
-      if (dist(mouseX, mouseY, x, y) < 3) { 
+      float curr_dist = dist(mouseX,mouseY,x,y);
+      if(min_dist > curr_dist){
+        min_dist=curr_dist;
+      }
+      if ((curr_dist < 3) && min_dist==curr_dist) { 
         strokeWeight(10); point(x, y); 
         fill(0); 
         textSize(18); 
